@@ -1,0 +1,17 @@
+{
+	"name" : "neulab/emag",
+	"autoload" : {
+		"psr-4" : {
+			"app\\" : "./"
+		}
+	},
+	"authors" : [{
+			"name" : "Andrei Adrian",
+			"email" : "andrei.adrian.21@protonmail.com"
+		}
+	],
+	"require": {
+		"phpunit/phpunit": "^9.5",
+		"mockery/mockery": "^1.4"
+	}
+}
