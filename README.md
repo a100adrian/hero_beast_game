@@ -38,7 +38,7 @@ php index.php
             Defender: Wild Beast
             Defender Health: 87
 
-Defender: Wild Beast was lucky, no damage was taken
+            Defender: Wild Beast was lucky, no damage was taken
 
             Round: 3
 
@@ -49,7 +49,7 @@ Defender: Wild Beast was lucky, no damage was taken
             Defender: Orderus
             Defender Health: 50
 
-Defender: Orderus was lucky, no damage was taken
+            Defender: Orderus was lucky, no damage was taken
 
             Round: 4
 
@@ -60,7 +60,7 @@ Defender: Orderus was lucky, no damage was taken
             Defender: Wild Beast
             Defender Health: 87
 
-Defender: Wild Beast was lucky, no damage was taken
+            Defender: Wild Beast was lucky, no damage was taken
 
             Round: 5
 
