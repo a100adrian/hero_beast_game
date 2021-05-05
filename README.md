@@ -320,4 +320,5 @@ Configuration: /mnt/c/users/neulab/eclipse-workspace/emag/phpunit.xml
 Time: 00:00.129, Memory: 6.00 MB
 
 OK (4 tests, 21 assertions)
+
 neulab@DESKTOP-RQ2B6JB:/mnt/c/users/neulab/eclipse-workspace/emag$
