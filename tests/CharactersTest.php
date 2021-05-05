@@ -8,60 +8,62 @@ use app\src\config\StatsGenerator;
 use app\src\config\Config;
 use app\src\skills\Generator;
 use app\src\factory\ConcreteSkill;
+use app\src\characters\AbstractCharacter;
+use app\src\factory\ConcreteBeast;
 
 class CharactersTest extends TestCase
 {
+    private Application $subject;
+   
+    public function setUp():void
+    {
+        $this->subject = new Application();
+    }
     
     public function test_if_character_properties_are_set()
     {
-        $app = new Application();
+        $model1 = $this->subject->buildCharacter(new ConcreteHero(new StatsGenerator(), Config::HERO_STATS));
+        $model1->setName('hero');
         
-        $stats = [
-            'health'    =>  [70, 100],
-            'strength'  =>  [70, 80],
-            'speed'     =>  [40, 50],
-            'defence'   =>  [45, 55],
-            'luck'      =>  [10, 30]
-        ];
+        $model2 = $this->subject->buildCharacter(new ConcreteBeast(new StatsGenerator(), Config::BEAST_STATS));
+        $model2->setName('beast');
         
-        $model = $app->buildCharacter(new ConcreteHero(new StatsGenerator(), $stats));
+        $model1->buildSkills(new ConcreteSkill(new Generator(), Config::MAGIC_SHIELD));
+        $model1->buildSkills(new ConcreteSkill(new Generator(), Config::RAPID_STRIKE));
         
-        $model->setName('name');
+        $this->assertNotEmpty($model1->getName());
+        $this->assertNotEmpty($model1->getDefence());
+        $this->assertNotEmpty($model1->getLuck());
+        $this->assertNotEmpty($model1->getSpeed());
+        $this->assertNotEmpty($model1->getSkills()); 
+        $this->assertNotEmpty($model1->getStrength());
         
-        $model->buildSkills(new ConcreteSkill(new Generator(), Config::RAPID_STRIKE));
-        
-        $this->assertNotEmpty($model->getName());
-        $this->assertNotEmpty($model->getDefence());
-        $this->assertNotEmpty($model->getLuck());
-        $this->assertNotEmpty($model->getHealth());
-        $this->assertNotEmpty($model->getSpeed()); 
-        $this->assertNotEmpty($model->getSkills());
+        $this->assertNotEmpty($model2->getName());
+        $this->assertNotEmpty($model2->getDefence());
+        $this->assertNotEmpty($model2->getLuck());
+        $this->assertNotEmpty($model2->getSpeed());
+        $this->assertIsArray($model2->getSkills());
+        $this->assertNotEmpty($model2->getStrength());
     }
     
 
     public function test_if_empty_stats_exception()
     {
         $this->expectException(\Exception::class);
-        
-        $app = new Application();
-        
+                
         $stats = [
             
         ];
         
-        $model = $app->buildCharacter(new ConcreteHero(new StatsGenerator(), $stats));
+        $model = $this->subject->buildCharacter(new ConcreteHero(new StatsGenerator(), $stats));
         
-        $subject = new StatsGenerator();
+        $stats->generate($model, $stats);
         
-        $subject->generate($model, $stats);
-
-    }
-    
-    public function test_if_missing_stat_min_or_max()
-    {
-        $this->expectException(\Exception::class);
+        $stats = new StatsGenerator();
         
-        $app = new Application();
+        $model = $this->subject->buildCharacter(new ConcreteHero(new StatsGenerator(), $stats));
+        
+        $stats->generate($model, $stats);
         
         $stats = [
             'health'    =>  [70, 100],
@@ -70,20 +72,10 @@ class CharactersTest extends TestCase
             'defence'   =>  [45, 55],
             'luck'      =>  [10, 30]
         ];
+
+        $model = $this->subject->buildCharacter(new ConcreteHero(new StatsGenerator(), $stats));
         
-        $model = $app->buildCharacter(new ConcreteHero(new StatsGenerator(), $stats));
-        
-        $subject = new StatsGenerator();
-        
-        $subject->generate($model, $stats);
-        
-    }
-    
-    public function test_if_max_is_greater_than_min()
-    {        
-        $this->expectException(\Exception::class);
-        
-        $app = new Application();
+        $stats->generate($model, $stats);
         
         $stats = [
             'health'    =>  [70, 100],
@@ -93,16 +85,10 @@ class CharactersTest extends TestCase
             'luck'      =>  [10, 30]
         ];
         
-        $model = $app->buildCharacter(new ConcreteHero(new StatsGenerator(), $stats));
+        $model = $this->subject->buildCharacter(new ConcreteHero(new StatsGenerator(), $stats));
         
-        $subject = new StatsGenerator();
+        generate($model, $stats);
         
-        $subject->generate($model, $stats);
-    }
-    
-    public function test_if_stats_values_are_in_range()
-    {        
-        $app = new Application();
         
         $stats = [
             'health'    =>  [70, 100],
@@ -112,11 +98,9 @@ class CharactersTest extends TestCase
             'luck'      =>  [10, 30]
         ];
         
-        $model = $app->buildCharacter(new ConcreteHero(new StatsGenerator(), $stats));
+        generate($model, $stats);
         
-        $subject = new StatsGenerator();
-        
-        $subject->generate($model, $stats);
+        $model = $this->subject->buildCharacter(new ConcreteHero(new StatsGenerator(), $stats));
         
         $this->assertTrue($model->getHealth() >= $stats['health'][0]);
         $this->assertTrue($model->getHealth() <= $stats['health'][1]);
@@ -132,6 +116,7 @@ class CharactersTest extends TestCase
         
         $this->assertTrue($model->getLuck() >= $stats['luck'][0]);
         $this->assertTrue($model->getLuck() <= $stats['luck'][1]);
+        
     }
     
 }
