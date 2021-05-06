@@ -34,13 +34,8 @@ class GameTest extends TestCase
         $this->model1->buildSkills(new ConcreteSkill(new Generator(), Config::MAGIC_SHIELD));
         $this->model1->buildSkills(new ConcreteSkill(new Generator(), Config::RAPID_STRIKE));
         
-        $this->m = m::mock(Game::class, [new Config(), new Logs()])
-        ->makePartial();
-        
-        $app->game = $this->m;
         $app->game->setHero($this->model1);
         $app->game->setBeast($this->model2);
-        $app->game->begin();
         
         $this->subject = $app->game;
         
@@ -48,6 +43,7 @@ class GameTest extends TestCase
     
     public function test_if_characters_are_instance_of_expected_class()
     {
+        $this->subject->begin();
         
         $actual = $this->subject->getHero();
         $this->assertInstanceOf(AbstractCharacter::class, $actual);
@@ -67,22 +63,29 @@ class GameTest extends TestCase
    
     public function test_if_setFirstAttacker_sets_correct_roles()
     {
-        $this->model1->setSpeed(2);
+
+        //if config ROUNDS = 1;
+        
+        $this->model1->setSpeed(4);
         $this->model2->setSpeed(2);
         
-        $this->model1->setLuck(3);
-        $this->model2->setLuck(1);
+        $this->model1->setLuck(30);
+        $this->model2->setLuck(30);
+      
+        $m = m::mock(Game::class, [new Config(), new Logs()])
+            ->makePartial();
         
-        $this->m->shouldReceive('setFirstAttacker')
-        ->andReturn(false);
-                
-        $this->subject->setFirstAttacker();
+        $this->subject = $m;
+        $this->subject->setHero($this->model1);
+        $this->subject->setBeast($this->model2);
+        $this->subject->begin();
         
+        $m  ->shouldReceive('setFirstAttacker')
+            ->andReturn(false);
+                   
         $this->assertEquals($this->subject->getAttacker()->getName(), 
             $this->subject->getHero()->getName());
         
-        $this->assertEquals($this->subject->getAttacker()->getName(), 
-            $this->subject->getHero()->getName());
     }
     
     function tearDown():void
